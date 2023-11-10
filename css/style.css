@@ -432,6 +432,11 @@ body {
     margin-bottom: 5px;
     display: block;
 }
+
+.hide {
+    display: none;
+}
+
 .label-auth input[type="text"] {
     width: 100%;
     padding: 10px;
