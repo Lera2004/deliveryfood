@@ -66,7 +66,28 @@ body {
 }
 .promo {
     box-shadow: 0px 7px 12px rgba(158, 158, 163, 0.1);
-    background: #fff1b8 url(../img/promo-image.png) no-repeat top -150px right -200px / 700px;
+    background: #fff1b8 url(../img/pizza2.png) no-repeat top -40px right -350px / 900px;
+    border-radius: 10px;
+    padding: 68px 70px;
+    margin-bottom: 56px;
+}
+.promo2 {
+    box-shadow: 0px 7px 12px rgba(158, 158, 163, 0.1);
+    background: #d2ffff url(../img/potato.png) no-repeat top -150px right -200px / 700px;
+    border-radius: 10px;
+    padding: 68px 70px;
+    margin-bottom: 56px;
+}
+.promo3 {
+    box-shadow: 0px 7px 12px rgba(158, 158, 163, 0.1);
+    background: rgb(255, 212, 184) url(../img/nagets.png) no-repeat top -50px right -100px / 700px;
+    border-radius: 10px;
+    padding: 68px 70px;
+    margin-bottom: 56px;
+}
+.promo4 {
+    box-shadow: 0px 7px 12px rgba(158, 158, 163, 0.1);
+    background: #e4c2fa url(../img/pita.png) no-repeat top -50px right -100px / 700px;
     border-radius: 10px;
     padding: 68px 70px;
     margin-bottom: 56px;

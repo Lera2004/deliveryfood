@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delivery Food - доставка еды на дом</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap&subset=cyrillic" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<!--<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>-->
     <link rel="stylesheet" href="css/normalize.css" />
         <link rel="stylesheet" href="css/animate.min.css" />
         <link rel="stylesheet" href="css/style.css" />
@@ -41,14 +43,35 @@
 
     <main class="main">
         <div class="container">
-                   <section class="container-promo">
-                        <section class="promo">
+                   <div class="swiper-container">
+                    <section class="container-promo swiper-wrapper">
+                        <section class="promo swiper-slide">
                             <h1 class="promo-title">Онлайн-сервис <br />доставки еды на дом</h1>
                             <p class="promo-text">
                                 Блюда из любимого ресторана привезет курьер в перчатках, маске и с антисептиком
                             </p>
                         </section>
-                   </section>
+                        <section class="promo2 swiper-slide">
+                            <h1 class="promo-title">Онлайн-сервис <br />доставки еды на дом</h1>
+                            <p class="promo-text">
+                                Блюда из любимого ресторана привезет курьер в перчатках, маске и с антисептиком
+                            </p>
+                        </section>
+                        <section class="promo3 swiper-slide">
+                            <h1 class="promo-title">Онлайн-сервис <br />доставки еды на дом</h1>
+                            <p class="promo-text">
+                                Блюда из любимого ресторана привезет курьер в перчатках, маске и с антисептиком
+                            </p>
+                        </section>
+                        <section class="promo4 swiper-slide">
+                            <h1 class="promo-title">Онлайн-сервис <br />доставки еды на дом</h1>
+                            <p class="promo-text">
+                                Блюда из любимого ресторана привезет курьер в перчатках, маске и с антисептиком
+                            </p>
+                        </section>
+                    </section>
+                    <div class="swiper-pagination"></div>
+                   </div>
                     
                     <section class="restaurants">
                         <div class="section-heading">
@@ -193,7 +216,7 @@
 </div>
 
     <script src="js/disabledScroll.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/main.js" type="module"></script>
     <script src="js/wow.min.js"></script>
 
 </body>

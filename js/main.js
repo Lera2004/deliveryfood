@@ -1,4 +1,5 @@
 'use strist';
+import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs'
 
 const cartButton = document.querySelector('#cart-button');
 const modal = document.querySelector(".modal");
@@ -197,4 +198,15 @@ logo.addEventListener('click', function () {
     containerPromo.classList.remove('hide')
         restaurants.classList.remove('hide')
         menu.classList.add('hide')
+})
+
+new Swiper('.swiper-container', {
+    sliderPerView: 1,
+    loop: true,
+    autoplay: true,
+    effect: 'cube',
+    grabCursor: true,
+    cubeEffect: {
+        shadow: false,
+    },
 })
