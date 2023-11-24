@@ -1,102 +1,121 @@
-'use strist';
+'use strict';
 import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs'
+const cartButton = document.querySelector("#cart-button"),
+    modal = document.querySelector(".modal"),
+    close = document.querySelector(".close"),
+    buttonAuth = document.querySelector(".button-auth"),
+    modalAuth = document.querySelector(".modal-auth"),
+    closeAuth = document.querySelector(".close-auth"),
+    logInForm = document.querySelector("#logInForm"),
+    loginInput = document.querySelector("#login"),
+    userName = document.querySelector(".user-name"),
+    buttonOut = document.querySelector(".button-out"),
+    cardsRestaurants = document.querySelector(".cards-restaurants"),
+    containerPromo = document.querySelector(".container-promo"),
+    restaurants = document.querySelector(".restaurants"),
+    menu = document.querySelector(".menu"),
+    logo = document.querySelector(".logo"),
+    cardsMenu = document.querySelector(".cards-menu"),
+    restaurantTitle = document.querySelector(".restaurant-title"),
+    rating = document.querySelector(".rating"),
+    minPrice = document.querySelector(".price"),
+    category = document.querySelector(".category")
 
-const cartButton = document.querySelector('#cart-button');
-const modal = document.querySelector(".modal");
-const close = document.querySelector(".close");
-const buttonAuth = document.querySelector('.button-auth');
-const modalAuth = document.querySelector('.modal-auth');
-const closeAuth = document.querySelector('.close-auth');
-const logInForm = document.querySelector('#logInForm');
-const loginInput = document.querySelector('#login');
-const userName = document.querySelector('.user-name');
-const buttonOut = document.querySelector('.button-out');
-const cardsRestaurants = document.querySelector('.cards');
-const containerPromo = document.querySelector('.container-promo');
-const restaurants = document.querySelector('.restaurants');
-const menu = document.querySelector('.menu');
-const logo = document.querySelector('.logo');
-const cardsMenu = document.querySelector('.cards-menu');
+let login = localStorage.getItem("logName");
 
-let login = localStorage.getItem('gloDelivery');
+
+const getData = async function (url) {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(`Ошибка по адресу ${url},
+			статус ошибки ${response,status}`);
+    }
+    return await response.json();
+
+}
+
+const validName = function (str) {
+    const nameReg = /^[a-zA-Z][a-zA-z0-9-_\.]{1,20}$/;
+    return nameReg.test(str);
+};
 
 function toggleModal() {
     modal.classList.toggle("is-open");
 }
 
-
 function toggleModalAuth() {
+    loginInput.style.borderColor = "";
     modalAuth.classList.toggle('is-open');
-    if (modalAuth.classList.contains('is-open')) {
-        disableScroll();
-    } else {
-        enableScroll();
-    }
 }
 
-function clearForm() {
-    loginInput.style.borderColor = '';
-    logInForm.reset();
+function returnMain() {
+    containerPromo.classList.remove("hide");
+    restaurants.classList.remove("hide");
+    menu.classList.add("hide");
+}
+
+function returnRestaurants() {
+    cardsMenu.textContent = "";
+    containerPromo.classList.add("hide");
+    restaurants.classList.add("hide");
+    menu.classList.remove("hide");
 }
 
 function authorized() {
+
     function logOut() {
         login = null;
-        localStorage.removeItem('gloDelivery');
-        userName.style.display = 'none';
-        buttonOut.style.display = 'none';
-        buttonAuth.style.display = '';
-        toggleModalAuth();
-        buttonOut.removeEventListener('click', logOut);
+        localStorage.removeItem("logName");
+
+        buttonAuth.style.display = "";
+        userName.style.display = "";
+        buttonOut.style.display = "";
+        buttonOut.removeEventListener("click", logOut);
         checkAuth();
+        returnMain();
     }
 
-    console.log('Авторизован');
-    userName.textContent = login;
-    buttonAuth.style.display = 'none';
-    userName.style.display = 'inline';
-    buttonOut.style.display = 'block';
+    console.log("Авторизован");
 
-    buttonOut.addEventListener('click', logOut);
+    userName.textContent = login;
+
+    buttonAuth.style.display = "none";
+    userName.style.display = "inline";
+    buttonOut.style.display = "flex";
+    cartButton.style.display = "flex";
+
+    buttonOut.addEventListener("click", logOut);
+
 }
 
 function notAuthorized() {
-    console.log('Не авторизован');
+    console.log("не авторизован");
 
     function logIn(event) {
         event.preventDefault();
-        
+        login = (loginInput.value).trim();
 
-        if (loginInput.value.trim()) {
-            login = loginInput.value;
-            localStorage.setItem('gloDelivery', login);
-            toggleModalAuth();
-            buttonAuth.style.display = 'none';
-            userName.style.display = 'inline';
-            buttonOut.style.display = 'block';
-            buttonAuth.removeEventListener('click', toggleModalAuth);
-            closeAuth.removeEventListener('click', toggleModalAuth);
-            logInForm.removeEventListener('submit', logIn);
-            logInForm.reset();
-            checkAuth();
+        if (!validName(login)) {
+            event.preventDefault();
+            loginInput.style.borderColor = "red";
         } else {
-            loginInput.style.borderColor = '#ff0000';
-            loginInput.value = '';
+
+            localStorage.setItem("logName", login);
+
+            toggleModalAuth();
+            buttonAuth.removeEventListener("click", toggleModalAuth);
+            closeAuth.removeEventListener("click", toggleModalAuth);
+            logInForm.removeEventListener("submit", logIn);
+            checkAuth();
         }
+
     }
 
-    buttonAuth.addEventListener('click', toggleModalAuth);
-    closeAuth.addEventListener('click', toggleModalAuth);
-    logInForm.addEventListener('submit', logIn);
-    modalAuth.addEventListener('click', function (event) {
-        console.log(event.target);
-        if (event.target.classList.contains('is-open')) {
-            toggleModalAuth()
-        }
-    })
+    buttonAuth.addEventListener("click", toggleModalAuth);
+    closeAuth.addEventListener("click", toggleModalAuth);
+    logInForm.addEventListener("submit", logIn);
 }
-
-buttonAuth.addEventListener('click', clearForm);
 
 function checkAuth() {
     if (login) {
@@ -106,107 +125,126 @@ function checkAuth() {
     }
 }
 
-checkAuth();
+function createCardRestaurant({ image, kitchen, name, price, stars,
+    products, time_of_delivery: timeOfDelivery }) {
 
-function createCardsRestaurant() {
-    const card = `
-        <a  class="card">
-            <img src="img/pizza1.jpg" alt="image1" class="card-image">
-            <div class="card-text">
-                <div class="card-heading">
-                    <h3 class="card-title">IQ Pizza</h3>
-                        <span class="card-tag tag">20 мин</span>
-                </div>
-                <div class="card-info">
-                    <div class="raiting">
-                        <img src="img/rating.svg" alt="raiting" class="raiting-star">
-                            4.5
-                    </div>
-                    <div class="price">От 69₴</div>
-                    <div class="category">Пицца</div>
-                </div>
-            </div>
-        </a>
-    `;
+    const card = document.createElement("a");
+    card.className = "card card-restaurant";
+    card.products = products;
+    card.info = [name, price, stars, kitchen];
 
-    cardsRestaurants.insertAdjacentHTML('beforeend', card);
+    card.insertAdjacentHTML("beforeend", `
+		<img src="${image}" alt="${name}" class="card-image"/>
+		<div class="card-text">
+			<div class="card-heading">
+				<h3 class="card-title">${name}</h3>
+				<span class="card-tag tag">${timeOfDelivery} мин</span>
+			</div>
+			<div class="card-info">
+				<div class="rating">
+					${stars}
+				</div>
+				<div class="price">От ${price} ₽</div>
+				<div class="category">${kitchen}</div>
+			</div>
+		</div>
+	`);
+    cardsRestaurants.insertAdjacentElement("beforeend", card);
 }
 
-createCardsRestaurant();
-createCardsRestaurant();
-createCardsRestaurant();
+function createCardGood({ description, image, name, price, id }) {
+    const card = document.createElement("div");
+    card.className = "card";
 
-function createCardGood() {
-    const card = document.createElement('div');
-    card.className = 'card';
+    card.insertAdjacentHTML("beforeend", `
+		<img src="${image}" alt="${name}" class="card-image"/>
+		<div class="card-text">
+			<div class="card-heading">
+				<h3 class="card-title card-title-reg">${name}</h3>
+			</div>
+			<div class="card-info">
+				<div class="ingredients">${description}
+				</div>
+			</div>
+			<div class="card-buttons">
+				<button class="button button-primary button-add-cart" id="${id}">
+					<span class="button-card-text">В корзину</span>
+					<span class="button-cart-svg"></span>
+				</button>
+				<strong class="card-price card-price-bold">${price} ₽</strong>
+			</div>
+		</div>
+	`);
 
-    card.insertAdjacentHTML('beforeend', `
-        <img src="img/pizza1.jpg" alt="image1" class="card-image">
-        <div class="card-text">
-            <div class="card-heading">
-                <h3 class="card-title card-title-reg">Ролл угорь стандарт</h3>
-            </div>
-            <div class="card-info">
-                <div class="ingredients">Рис, угорь, соус унаги, кунжут, водоросли нори.</div>
-            </div>
-            <div class="card-buttons">
-                <button class="button button-primary">
-                    <span class="button-card-text">В корзину</span>
-                    <img src="img/shopping-cart2.svg" alt="shopping-card" class="button-card-image">
-                </button>
-                <strong class="card-price-bold">250 ₴</strong>
-            </div>
-       </div>
-    `);
-
-    cardsMenu.insertAdjacentElement('beforeend', card);
+    cardsMenu.insertAdjacentElement("beforeend", card);
 }
 
 function openGoods(event) {
-    
-
     const target = event.target;
 
-    const restaurant = target.closest('.card');
+    if (login) {
 
+        const restaurant = target.closest(".card-restaurant");
 
-if(login) {
+        if (restaurant) {
 
-if (restaurant) {
-        cardsMenu.textContent = '';
-        containerPromo.classList.add('hide')
-        restaurants.classList.add('hide')
-        menu.classList.remove('hide')
+            const [name, price, stars] = restaurant.info;
 
-        createCardGood();
-        createCardGood();
-        createCardGood();
+            returnRestaurants();
+
+            restaurantTitle.textContent = name;
+            rating.textContent = stars;
+            minPrice.textContent = `От ${price} Р`;
+            category.textContent = "";
+
+            getData(`./db/${restaurant.products}`).then(function (data) {
+                data.forEach(createCardGood);
+            });
+        }
+
+    } else {
+        toggleModalAuth();
     }
-	} else {
-		toggleModalAuth();
-	}
+
 }
 
 
-cartButton.addEventListener("click", toggleModal);
-close.addEventListener("click", toggleModal);
 
 
 
-cardsRestaurants.addEventListener('click', openGoods);
-logo.addEventListener('click', function () {
-    containerPromo.classList.remove('hide')
-        restaurants.classList.remove('hide')
-        menu.classList.add('hide')
-})
 
-new Swiper('.swiper-container', {
-    sliderPerView: 1,
-    loop: true,
-    autoplay: true,
-    effect: 'cube',
-    grabCursor: true,
-    cubeEffect: {
-        shadow: false,
-    },
-})
+
+function init() {
+    getData("./db/partners.json").then(function (data) {
+        data.forEach(createCardRestaurant);
+    });
+
+    cardsRestaurants.addEventListener("click", openGoods);
+
+    logo.addEventListener("click", returnMain);
+
+
+    cartButton.addEventListener("click", function () {
+        toggleModal();
+    });
+
+
+    close.addEventListener("click", toggleModal);
+
+
+
+    checkAuth();
+
+    new Swiper('.swiper-container', {
+        sliderPerView: 1,
+        loop: true,
+        autoplay: true,
+        effect: 'cube',
+        grabCursor: true,
+        cubeEffect: {
+            shadow: false,
+        },
+    });
+}
+
+init();
