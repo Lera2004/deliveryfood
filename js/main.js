@@ -19,7 +19,8 @@ const cartButton = document.querySelector("#cart-button"),
     restaurantTitle = document.querySelector(".restaurant-title"),
     rating = document.querySelector(".rating"),
     minPrice = document.querySelector(".price"),
-    category = document.querySelector(".category")
+    category = document.querySelector(".category"),
+    inputSearch = document.querySelector(".input-search")
 
 let login = localStorage.getItem("logName");
 
@@ -231,7 +232,7 @@ function init() {
 
     close.addEventListener("click", toggleModal);
 
-
+    inputSearch.addEventListener("keydown", searchAllGoods);
 
     checkAuth();
 
@@ -246,5 +247,55 @@ function init() {
         },
     });
 }
+function searchAllGoods (event) {
+	if(event.keyCode == 13) {
+		const target = event.target;
 
+		const value = target.value.toLowerCase().trim();
+
+		if(!value || value.length < 3) {
+			target.style.backgroundColor = "red";
+			setTimeout(function() {
+				target.style.backgroundColor = "";
+			}, 2000);
+			return;
+		}
+
+		target.value = "";
+
+		const goods = [];
+
+		getData("./db/partners.json")
+			.then(function(data) {
+				const products = data.map(function(item) {
+					return item.products;
+				});
+
+				products.forEach(function(product) {
+					getData(`./db/${product}`)
+						.then(function(data) {
+							goods.push(...data);
+
+							const searchGoods = goods.filter(function(item) {
+								return item.name.toLowerCase().includes(value);
+							});
+
+							returnRestaurants();
+
+							restaurantTitle.textContent = "Результат поиска";
+							rating.textContent = "";
+							minPrice.textContent = "";
+							category.textContent = "";
+
+							return searchGoods;
+
+						})
+						.then(function(data) {
+							data.forEach(createCardGood);
+						});
+				});
+			});
+
+	}
+}
 init();
