@@ -1,5 +1,27 @@
 'use strict';
 import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs'
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  push,
+  child,
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAqFEqx5O6kVCAYtPfb7fjFdLecQcNbKYQ",
+    authDomain: "delivery-4168a.firebaseapp.com",
+    databaseURL: "https://delivery-4168a-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "delivery-4168a",
+    storageBucket: "delivery-4168a.appspot.com",
+    messagingSenderId: "283323881510",
+    appId: "1:283323881510:web:d21bdb6cad4640ff1e6ee7",
+    measurementId: "G-8CBETZPE72"
+};
+  const app = initializeApp(firebaseConfig);
+const dbRef = ref(getDatabase(app));
+
 const cartButton = document.querySelector("#cart-button"),
 	modal = document.querySelector(".modal"),
 	close = document.querySelector(".close"),
@@ -23,7 +45,8 @@ const cartButton = document.querySelector("#cart-button"),
 	inputSearch = document.querySelector(".input-search"),
 	modalBody = document.querySelector(".modal-body"),
 	modalPrice = document.querySelector(".modal-pricetag"),
-	buttonClearCart = document.querySelector(".clear-cart");
+	buttonClearCart = document.querySelector(".clear-cart"),
+	orderButton = document.querySelector("#orderButton");
 
 let login = localStorage.getItem("logName");
 
@@ -48,6 +71,53 @@ const validName = function(str) {
 	const nameReg = /^[a-zA-Z][a-zA-z0-9-_\.]{1,20}$/;
 	return nameReg.test(str);
 };
+
+orderButton.addEventListener("click", () => {
+  if (cart.length > 0) {
+    console.log("Замовлення оформлено:");
+
+    const totalPrice = cart.reduce((result, item) => result + parseFloat(item.cost) * item.count, 0);
+    const ordersRef = child(dbRef, 'orders');
+
+    const orderData = {
+      date: new Date().toISOString(),
+      items: cart.map(item => ({
+        title: item.title,
+        cost: item.cost,
+        count: item.count
+      })),
+      total: totalPrice.toFixed(2)
+    };
+    const newOrderRef = push(ordersRef, orderData);
+
+    orderData.items.forEach(item => {
+      console.log(`Назва: ${item.title}, Ціна: ${item.cost}, Кількість: ${item.count}`);
+    });
+
+    console.log("Total Price:", orderData.total);
+
+    cart.length = 0;
+    renderCart();
+
+    modalBody.innerHTML = '<div class="modal-text" style="font-size: 40px; text-align: center; color: red; font-weight: bold;">Замовлення оформлено</div>';
+
+	cartButton.style.display = "none";
+    orderButton.style.display = "none";
+	modalPrice.style.display = "none";
+	buttonClearCart.style.display = "none";
+	  
+    setTimeout(() => {
+      modalBody.innerHTML = '';
+		toggleModal();
+		 cartButton.style.display = "flex";
+      orderButton.style.display = "block";
+      modalPrice.style.display = "block";
+	  buttonClearCart.style.display = "block";
+    }, 2000);
+  } else {
+    console.log("Кошик порожній. Додайте товари в кошик перед оформленням замовлення.");
+  }
+});
 
 function toggleModal() {
   modal.classList.toggle("is-open");
@@ -351,4 +421,5 @@ function init() {
     });
 }
 
-init();
+	init();
+	
